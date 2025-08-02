@@ -1,0 +1,15 @@
+[package]
+name = "lazymut"
+version = "0.1.0"
+edition = "2021"
+
+authors = ["A4-Tacks <wdsjxhno1001@163.com>"]
+keywords = ["lazy", "mut", "once", "lock", "mutex"]
+categories = ["no-std", "no-std::no-alloc", "rust-patterns"]
+description = "Similar to LazyCell, but use &mut self to get or initialization"
+
+license = "MIT"
+repository = "https://github.com/A4-Tacks/lazymut-rs"
+readme = "README.md"
+
+[dependencies]
