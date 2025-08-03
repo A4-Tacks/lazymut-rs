@@ -60,6 +60,10 @@ impl<T, F> LazyMut<T, F> {
 
     /// Returns value when initialized
     ///
+    /// # Panics
+    ///
+    /// Panics if state is poisoned
+    ///
     /// # Examples
     ///
     /// ```
@@ -79,7 +83,8 @@ impl<T, F> LazyMut<T, F> {
     /// ```
     pub fn into_inner(self) -> Option<T> {
         match self.state {
-            State::Uninit(_) | State::Poisoned => None,
+            State::Uninit(_) => None,
+            State::Poisoned => panic_poisoned(),
             State::Inited(val) => Some(val),
         }
     }
