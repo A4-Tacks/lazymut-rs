@@ -27,16 +27,56 @@ impl<T, F> LazyMut<T, F> {
     }
 
     /// Try get inner value reference
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// # use lazymut::LazyMut;
+    /// let mut lazy_mut = LazyMut::new(|| 3);
+    ///
+    /// assert_eq!(lazy_mut.try_get(), None);
+    /// assert_eq!(lazy_mut.get(), &mut 3);
+    /// assert_eq!(lazy_mut.try_get(), Some(&3));
+    /// ```
     pub const fn try_get(&self) -> Option<&T> {
         self.state.try_get()
     }
 
     /// Try get inner value mut reference
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// # use lazymut::LazyMut;
+    /// let mut lazy_mut = LazyMut::new(|| 3);
+    ///
+    /// assert_eq!(lazy_mut.try_get_mut(), None);
+    /// assert_eq!(lazy_mut.get(), &mut 3);
+    /// assert_eq!(lazy_mut.try_get_mut(), Some(&mut 3));
+    /// ```
     pub const fn try_get_mut(&mut self) -> Option<&mut T> {
         self.state.try_get_mut()
     }
 
     /// Returns value when initialized
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// # use lazymut::LazyMut;
+    /// let mut lazy_mut = LazyMut::new(|| 3);
+    ///
+    /// assert_eq!(lazy_mut.get(), &mut 3);
+    /// assert_eq!(lazy_mut.into_inner(), Some(3));
+    /// ```
+    ///
+    /// ```
+    /// # use lazymut::LazyMut;
+    /// let mut lazy_mut = LazyMut::new(|| 3i32);
+    ///
+    /// # assert_ne!(lazy_mut.try_get(), Some(&3));
+    /// assert_eq!(lazy_mut.into_inner(), None);
+    /// ```
     pub fn into_inner(self) -> Option<T> {
         match self.state {
             State::Uninit(_) | State::Poisoned => None,
@@ -46,6 +86,23 @@ impl<T, F> LazyMut<T, F> {
 }
 
 impl<T, F: FnOnce() -> T> LazyMut<T, F> {
+    /// Get mutable value reference or initialize value
+    ///
+    /// # Panics
+    ///
+    /// Panics if state is poisoned or initializer panic
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use lazymut::LazyMut;
+    ///
+    /// let mut lazy_mut = LazyMut::new(|| vec![1]);
+    ///
+    /// assert_eq!(lazy_mut.get(), &mut vec![1]);
+    /// lazy_mut.get().push(2);
+    /// assert_eq!(lazy_mut.get(), &mut vec![1, 2]);
+    /// ```
     pub fn get(&mut self) -> &mut T {
         self.state.get_or_init()
     }
