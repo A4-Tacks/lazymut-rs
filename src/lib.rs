@@ -4,9 +4,14 @@
 use core::{fmt::{self, Debug}, mem::replace};
 
 #[doc = include_str!("../README.md")]
-#[derive(Default)]
 pub struct LazyMut<T, F = fn() -> T> {
     state: State<T, F>,
+}
+
+impl<T: Default> Default for LazyMut<T> {
+    fn default() -> Self {
+        Self::new(T::default)
+    }
 }
 
 impl<T: Debug, F> Debug for LazyMut<T, F> {
