@@ -1,4 +1,4 @@
-Similar to [`std::cell::LazyCell`], but use `&mut self` to get or initialization
+Similar to [`core::cell::LazyCell`], but use `&mut self` to get or initialization
 
 Suitable for being wrapped in a `Mutex`
 
